@@ -35,7 +35,7 @@ void Stage::Update()
 	if (Input::IsMouseButtonDown(0))
 	{
 		XMMATRIX matView = Camera::GetViewMatrix();//ビュー行列
-		XMMATRIX matProj = Camera::GetProjectionMatrix();//プロジェクション行列（
+		XMMATRIX matProj = Camera::GetProjectionMatrix();//プロジェクション行列
 
 		float w = Direct3D::WINDOW_WIDTH/2;
 		float h = Direct3D::WINDOW_HEIGHT/2;
@@ -52,9 +52,9 @@ void Stage::Update()
 		XMMATRIX invProj = XMMatrixInverse(nullptr, matProj);//プロジェクション行列（の逆行列）
 		XMMATRIX invVP = XMMatrixInverse(nullptr, vp);//ビューポート行列（の逆行列）
 
-		XMVECTOR mouseFrontPos = Input::GetMousePosition();//マウスの位置をとって
-		XMFLOAT3 MousePos;//スクリーン座標
-		XMStoreFloat3(&MousePos, mouseFrontPos);//MousePosをXMFLOATに変換
+		XMVECTOR mouseFrontPos = Input::GetMousePosition();//マウスの位置をとってXMvectorへ
+		XMFLOAT3 MousePos;//スクリーン座標を入れるXMfloat
+		XMStoreFloat3(&MousePos, mouseFrontPos);//MousePosにmouseFrontPosの値をXMFLOATに変換して入れる
 		MousePos.z = 0;
 		mouseFrontPos = XMLoadFloat3(&MousePos);//MousePosをベクトルに変換
 
@@ -62,8 +62,7 @@ void Stage::Update()
 		XMVECTOR mouseBackPos = XMLoadFloat3(&MousePos);//マウスの位置をベクトル化
 		
 		mouseFrontPos = XMVector3TransformCoord(mouseFrontPos, invVP * invProj * invView);
-		mouseBackPos = XMVector3TransformCoord(mouseFrontPos, invVP * invProj * invView);
-
+		mouseBackPos = XMVector3TransformCoord(mouseBackPos, invVP * invProj * invView);
 	}
 }
 
