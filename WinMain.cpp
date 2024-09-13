@@ -185,7 +185,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
             if (Input::IsMouseButtonUp(0))
             {
-                PostQuitMessage(0);
+               // PostQuitMessage(0);
             }
 
             /*Transform trs;

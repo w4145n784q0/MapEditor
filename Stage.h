@@ -3,6 +3,7 @@
 class Stage
 {
     FBX* pFBX;
+    int table[20][20];
 public:
     //コンストラクタ
     Stage();
