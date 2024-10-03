@@ -1,9 +1,19 @@
 #pragma once
 #include"FBX.h"
+#include<string>
 class Stage
 {
     FBX* pFBX;
-    int table[20][20];
+    FBX* pFBXarray[5];
+    //int table[20][20];
+    
+    struct Data
+    {
+        int height;
+        int type;
+    };
+    Data table[20][20];
+
 public:
     //コンストラクタ
     Stage();

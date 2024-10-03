@@ -5,11 +5,12 @@
 
 namespace {
 	int blockwidth = 20;
+	int blockheight = 20;
 }
 
 Stage::Stage() :pFBX(nullptr)
 {
-	for (int i = 0; i < blockwidth; i++)
+	for (int i = 0; i < blockheight; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
 		{
@@ -26,8 +27,28 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	pFBX = new FBX;
-	pFBX->Load("Assets/BoxDefault.fbx");
+	/*pFBX = new FBX;
+	pFBX->Load("Assets/BoxDefault.fbx");*/
+
+	/*pFBXarray[0] = new FBX;
+	pFBXarray[0]->Load("Assets/BoxDefault.fbx");
+	pFBXarray[1] = new FBX;
+	pFBXarray[1]->Load("Assets/BoxBrick.fbx");
+	pFBXarray[2] = new FBX;
+	pFBXarray[2]->Load("Assets/BoxSand.fbx");
+	pFBXarray[3] = new FBX;
+	pFBXarray[3]->Load("Assets/BoxWater.fbx");
+	pFBXarray[4] = new FBX;
+	pFBXarray[4]->Load("Assets/BoxGrass.fbx");*/
+
+	string fileName[] = { "BoxDefault","BoxBrick","BoxSand"
+		,"BoxWater","BoxGrass" };
+	for (int i = 0; i < 5; i++)
+	{
+		string path = "Assets/" + fileName[i] + ".fbx";
+		pFBXarray[i] = new FBX;
+		pFBXarray[i]->Load(path);
+	}
 }
 
 void Stage::Update()
@@ -93,7 +114,7 @@ void Stage::Draw()
 				transform.position_.x = x;
 				transform.position_.y = y;
 				transform.position_.z = z;
-				pFBX->Draw(transform);
+				pFBXarray[0]->Draw(transform);
 			}
 
 		}
