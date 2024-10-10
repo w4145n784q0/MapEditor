@@ -16,6 +16,15 @@
 #pragma comment(lib, "zlib-MD.lib")
 //マルチデバッグがmtならMDのところをMTにする
 
+//classの外にかく
+struct RayCastData
+{
+	XMFLOAT4 start;
+	XMFLOAT4 dir;
+	bool hit;
+	float dist;
+};
+
 class FBX
 {
 private:
@@ -38,6 +47,8 @@ private:
 		XMVECTOR uv;
 		XMVECTOR normal;//法線ベクトル　ノーマル追加
 	};
+	std::vector<VERTEX> vertices;//頂点データ
+	std::vector<int> *index;//インデックスデータ
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
 	ID3D11Buffer** pIndexBuffer_; //インデックスバッファ
@@ -59,6 +70,6 @@ public:
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
 	void    Release();
-	
+	void RayCast(RayCastData& rayData);//参照でポインタのように扱える
 };
 

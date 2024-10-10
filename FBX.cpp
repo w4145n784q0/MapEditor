@@ -1,7 +1,7 @@
 #include "FBX.h"
 #include "Camera.h"
 #include <filesystem>
-
+#include<DirectXCollision.h>
 namespace fs = std::filesystem;
 
 FBX::FBX()
@@ -62,8 +62,9 @@ HRESULT FBX::Load(std::string fileName)
 void FBX::InitVertex(fbxsdk::FbxMesh* mesh)
 {
 	//頂点情報を入れる配列
-	//VERTEX* vertices = new VERTEX[vertexCount_];
-	std::vector<VERTEX> vertices(vertexCount_);
+	
+	vertices = std::vector<VERTEX>(vertexCount_);//メンバ変数にしてここで初期化
+
 	//全ポリゴン
 	for (DWORD poly = 0; poly < polygonCount_; poly++)//dword　microsoftで使われる型　とても大きい
 	{
@@ -114,12 +115,15 @@ void FBX::InitVertex(fbxsdk::FbxMesh* mesh)
 void FBX::InitIndex(fbxsdk::FbxMesh* mesh)
 {
 	pIndexBuffer_ = new ID3D11Buffer * [materialCount_];
-	//int* index = new int[polygonCount_ * 3];
+	
 	indexCount_ = std::vector<int>(materialCount_);
-	std::vector<int> index(polygonCount_ * 3);
+	//std::vector<int> index(polygonCount_ * 3);
+	index = new std::vector<int>[materialCount_];
 
 	for (int i = 0; i < materialCount_; i++)
 	{
+		index[i] = std::vector<int>(polygonCount_ * 3);
+
 		int count = 0;
 		//全ポリゴン
 		//index.clear();
@@ -131,7 +135,7 @@ void FBX::InitIndex(fbxsdk::FbxMesh* mesh)
 				//3頂点分
 				for (DWORD vertex = 0; vertex < 3; vertex++)
 				{
-					index[count] = mesh->GetPolygonVertex(poly, vertex);
+					index[i][count] = mesh->GetPolygonVertex(poly, vertex);
 					count++;
 				}
 			}
@@ -146,7 +150,7 @@ void FBX::InitIndex(fbxsdk::FbxMesh* mesh)
 		bd.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA InitData;
-		InitData.pSysMem = index.data();
+		InitData.pSysMem = index[i].data();
 		InitData.SysMemPitch = 0;
 		InitData.SysMemSlicePitch = 0;
 
@@ -274,4 +278,30 @@ void FBX::Draw(Transform& transform)
 
 void FBX::Release()
 {
+}
+
+void FBX::RayCast(RayCastData& rayData)
+{
+	XMVECTOR start = XMLoadFloat4(&rayData.start);//ベクトルの発射位置
+	XMVECTOR dir = XMLoadFloat4(&rayData.dir);//ベクトルの向き
+	dir = XMVector3Normalize(dir);//向きベクトルは必ず正規化
+
+	for (int material = 0; material < materialCount_; material++)
+	{
+		//インデックスの数/3 ポリゴンは頂点三つで一個なので
+		for (int poly = 0; poly < indexCount_[material] / 3; poly++)
+		{
+			//３角形の各ポリゴンの頂点は012と続くので+012と続けて
+			//次のループで*3する
+			XMVECTOR v0 = vertices[index[material][poly * 3 + 0]].position;//三角形の3頂点
+			XMVECTOR v1 = vertices[index[material][poly * 3 + 1]].position;
+			XMVECTOR v2 = vertices[index[material][poly * 3 + 2]].position;
+
+			rayData.hit = TriangleTests::Intersects(start, dir, v0, v1, v2, rayData.dist);//参照なので値は変わる
+			if (rayData.hit)
+			{
+				return;
+			}
+		}
+	}
 }

@@ -14,11 +14,11 @@ Stage::Stage() :pFBX(nullptr)
 	{
 		for (int j = 0; j < blockwidth; j++)
 		{
-			table[i][j] = 1;
+			table[i][j].height = 1;
 		}
 	}
-	table[0][0] = 5;
-	table[0][9] = 3;
+	table[0][0].height = 5;
+	table[0][9].height = 3;
 }
 
 Stage::~Stage()
@@ -53,6 +53,11 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
+	RayCastData data;
+	data.start = XMFLOAT4(0, 5, 0, 0);
+	data.dir = XMFLOAT4(0, -1, 0, 0);
+	pFBXarray[0]->RayCast(data);
+
 	if (Input::IsMouseButtonDown(0))
 	{
 		XMMATRIX matView = Camera::GetViewMatrix();//ƒrƒ…[s—ñ
@@ -109,7 +114,7 @@ void Stage::Draw()
 	{
 		for (int z = 0; z < blockwidth; z++)
 		{
-			for (int y = 0; y < table[x][z]; y++)
+			for (int y = 0; y < table[x][z].height; y++)
 			{
 				transform.position_.x = x;
 				transform.position_.y = y;
