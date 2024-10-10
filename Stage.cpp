@@ -15,10 +15,12 @@ Stage::Stage() :pFBX(nullptr)
 		for (int j = 0; j < blockwidth; j++)
 		{
 			table[i][j].height = 1;
+			table[i][j].type = 0;
 		}
 	}
 	table[0][0].height = 5;
 	table[0][9].height = 3;
+	table[5][2].type = 3;
 }
 
 Stage::~Stage()
@@ -119,7 +121,9 @@ void Stage::Draw()
 				transform.position_.x = x;
 				transform.position_.y = y;
 				transform.position_.z = z;
-				pFBXarray[0]->Draw(transform);
+				
+				int type = table[x][z].type;
+				pFBXarray[type]->Draw(transform);
 			}
 
 		}
@@ -129,6 +133,10 @@ void Stage::Draw()
 
 void Stage::Release()
 {
-	pFBX->Release();
-	SAFE_DELETE(pFBX);
+	for (int i = 0; i < 5; i++)
+	{
+		pFBXarray[i]->Release();
+		SAFE_DELETE(pFBXarray[i]);
+	}
+
 }
