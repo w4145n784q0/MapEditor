@@ -70,6 +70,6 @@ public:
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
 	void    Release();
-	void RayCast(RayCastData& rayData);//参照でポインタのように扱える
+	void RayCast(RayCastData& rayData, Transform& transform);//参照でポインタのように扱える
 };
 

@@ -32,6 +32,7 @@ void Transform::Calculation()
     matRotate_ = rz * rx * ry;
 
     matScale_ = XMMatrixScaling(scale_.x,scale_.y,scale_.z);
+    //‚±‚±‚Åƒ[ƒ‹ƒhÀ•W‚É‚µ‚Ä‚é
 }
 
 XMMATRIX Transform::GetWorldMatrix()

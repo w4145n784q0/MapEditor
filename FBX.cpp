@@ -280,11 +280,20 @@ void FBX::Release()
 {
 }
 
-void FBX::RayCast(RayCastData& rayData)
+void FBX::RayCast(RayCastData& rayData, Transform& transform)
 {
+	transform.Calculation();
+	XMMATRIX invWorld = XMMatrixInverse(nullptr, transform.GetWorldMatrix());//ワールド行列の逆行列
+
 	XMVECTOR start = XMLoadFloat4(&rayData.start);//ベクトルの発射位置
 	XMVECTOR dir = XMLoadFloat4(&rayData.dir);//ベクトルの向き
 	dir = XMVector3Normalize(dir);//向きベクトルは必ず正規化
+
+	XMVECTOR end = start + dir;//start（減点からの位置）に向きを足すとベクトルの終端までの距離がわかる
+
+	start = XMVector3TransformCoord(start, invWorld);//開始位置に逆行列をかける
+	end = XMVector3TransformCoord(end, invWorld);//終端位置に逆行列をかける
+	dir = end - start;//終端位置から開始位置を引いて向きベクトルを求める
 
 	for (int material = 0; material < materialCount_; material++)
 	{
@@ -293,9 +302,13 @@ void FBX::RayCast(RayCastData& rayData)
 		{
 			//３角形の各ポリゴンの頂点は012と続くので+012と続けて
 			//次のループで*3する
+			//あくまでローカル座標↓
 			XMVECTOR v0 = vertices[index[material][poly * 3 + 0]].position;//三角形の3頂点
 			XMVECTOR v1 = vertices[index[material][poly * 3 + 1]].position;
 			XMVECTOR v2 = vertices[index[material][poly * 3 + 2]].position;
+			//v0 = XMVector3TransformCoord(v0, transform.GetWorldMatrix());//v0（ローカル座標）にワールド行列をかけてワールド座標に変換
+			//v1 = XMVector3TransformCoord(v1, transform.GetWorldMatrix());//v1
+			//v2 = XMVector3TransformCoord(v2, transform.GetWorldMatrix());//v2
 
 			rayData.hit = TriangleTests::Intersects(start, dir, v0, v1, v2, rayData.dist);//参照なので値は変わる
 			if (rayData.hit)

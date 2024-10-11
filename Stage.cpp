@@ -58,7 +58,11 @@ void Stage::Update()
 	RayCastData data;
 	data.start = XMFLOAT4(0, 5, 0, 0);
 	data.dir = XMFLOAT4(0, -1, 0, 0);
-	pFBXarray[0]->RayCast(data);
+
+	Transform trans;
+	trans.position_.x = 1;
+
+	pFBXarray[0]->RayCast(data,trans);
 
 	if (Input::IsMouseButtonDown(0))
 	{
@@ -118,6 +122,7 @@ void Stage::Draw()
 		{
 			for (int y = 0; y < table[x][z].height; y++)
 			{
+				//•\Ž¦ˆÊ’u‚ª•Ï‚í‚Á‚Ä‚¢‚é‚¾‚¯
 				transform.position_.x = x;
 				transform.position_.y = y;
 				transform.position_.z = z;
