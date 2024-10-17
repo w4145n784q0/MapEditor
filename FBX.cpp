@@ -280,6 +280,11 @@ void FBX::Release()
 {
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="rayData"> レイの先頭、終端、当たっているか、長さ </param>
+/// <param name="transform">  </param>
 void FBX::RayCast(RayCastData& rayData, Transform& transform)
 {
 	transform.Calculation();

@@ -55,8 +55,6 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
-	
-
 	if (Input::IsMouseButtonDown(0))
 	{
 		XMMATRIX matView = Camera::GetViewMatrix();//ビュー行列
@@ -93,20 +91,33 @@ void Stage::Update()
 		XMStoreFloat4(&data.start, mouseFrontPos);
 		XMStoreFloat4(&data.dir, mouseBackPos - mouseFrontPos);
 
-		Transform trans;
-		pFBXarray[0]->RayCast(data, trans);
-
-		if (data.hit == true)
+		for (int x = 0; x < blockwidth; x++)
 		{
-			//PostQuitMessage(0);
-		}
+			for (int z = 0; z < blockwidth; z++)
+			{
+				for (int y = 0; y < table[x][z].height; y++)
+				{
+					Transform trans;
+					trans.position_.x = x;
+					trans.position_.y = y;
+					trans.position_.z = z;
 
+					int type = table[x][z].type;
+					pFBXarray[type]->RayCast(data, trans);
+					if (data.hit == true)
+					{
+						table[x][z].height++;
+						return;
+					}
+				}
+			}
+		}
 	}
 }
 
 void Stage::Draw()
 {
-	Transform transform;
+	
 	/*for (int i = 0; i < blockwidth; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
@@ -129,6 +140,7 @@ void Stage::Draw()
 			for (int y = 0; y < table[x][z].height; y++)
 			{
 				//表示位置が変わっているだけ
+				Transform transform;
 				transform.position_.x = x;
 				transform.position_.y = y;
 				transform.position_.z = z;
