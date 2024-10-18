@@ -216,7 +216,7 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"ëê");
 		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"çª");
 		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"êÖ");
-		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_SETCURSEL, 1, 0);
+		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_SETCURSEL, 0, 0);
 		break;
 
 	case WM_COMMAND:
@@ -232,7 +232,7 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 			selectMode = 2;
 			break;
 		case IDC_COMBO3:
-			//selectType = (int)SendMessage(GetDlgItem(hDlg,lp), CB_GETCURSEL, 0, 0);
+			selectType = (int)SendMessage(GetDlgItem(hDlg,IDC_COMBO3), CB_GETCURSEL, 0, 0);
 			break;
 		case ID_MENU_NEW:
 			break;
