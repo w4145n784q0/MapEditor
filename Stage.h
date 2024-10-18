@@ -3,7 +3,7 @@
 #include<string>
 class Stage
 {
-    FBX* pFBX;
+    //FBX* pFBX;
     FBX* pFBXarray[5];
     //int table[20][20];
     
@@ -13,7 +13,8 @@ class Stage
         int type;
     };
     Data table[20][20];
-
+    int selectMode;//地形を上げるか下げるか変えるか
+    int selectType;//地形のしゅるい
 public:
     //コンストラクタ
     Stage();

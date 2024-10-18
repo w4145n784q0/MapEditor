@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include <filesystem>
 #include<DirectXCollision.h>
+
 namespace fs = std::filesystem;
 
 FBX::FBX()
@@ -299,6 +300,7 @@ void FBX::RayCast(RayCastData& rayData, Transform& transform)
 	start = XMVector3TransformCoord(start, invWorld);//開始位置に逆行列をかける
 	end = XMVector3TransformCoord(end, invWorld);//終端位置に逆行列をかける
 	dir = end - start;//終端位置から開始位置を引いて向きベクトルを求める
+	
 
 	for (int material = 0; material < materialCount_; material++)
 	{
@@ -314,7 +316,7 @@ void FBX::RayCast(RayCastData& rayData, Transform& transform)
 			//v0 = XMVector3TransformCoord(v0, transform.GetWorldMatrix());//v0（ローカル座標）にワールド行列をかけてワールド座標に変換
 			//v1 = XMVector3TransformCoord(v1, transform.GetWorldMatrix());//v1
 			//v2 = XMVector3TransformCoord(v2, transform.GetWorldMatrix());//v2
-
+			
 			rayData.hit = TriangleTests::Intersects(start, dir, v0, v1, v2, rayData.dist);//参照なので値は変わる
 			if (rayData.hit)
 			{

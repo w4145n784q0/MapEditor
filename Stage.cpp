@@ -9,7 +9,7 @@ namespace {
 	int blockheight = 20;
 }
 
-Stage::Stage() :pFBX(nullptr)
+Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
 {
 	for (int i = 0; i < blockheight; i++)
 	{
@@ -68,8 +68,9 @@ void Stage::Update()
 		{
 			w, 0, 0, 0,
 			0, -h, 0, 0,
-			0, 0, 0, 0,
-			w, h, 0, 0, // この行が移動分（DirectXの場合）
+			0, 0, 1, 0,//zは1じゃないと何もしない行列としておかしくなる
+			w, h, 0, 1, // この行が移動分（DirectXの場合）
+			//
 		};
 
 		XMMATRIX invView = XMMatrixInverse(nullptr, matView);//ビュー行列（の逆行列）
@@ -79,8 +80,9 @@ void Stage::Update()
 		XMVECTOR mouseFrontPos = Input::GetMousePosition();//マウスの位置をとってXMvectorへ
 		XMFLOAT3 MousePos;//スクリーン座標を入れるXMfloat
 		XMStoreFloat3(&MousePos, mouseFrontPos);//MousePosにmouseFrontPosの値をXMFLOATに変換して入れる
+
 		MousePos.z = 0;
-		mouseFrontPos = XMLoadFloat3(&MousePos);//MousePosをベクトルに変換
+		mouseFrontPos = XMLoadFloat3(&MousePos);//MousePosをベクトルに変換 カメラから見える範囲で一番後ろの面を取得
 
 		MousePos.z = 1;//一番奥をとる
 		XMVECTOR mouseBackPos = XMLoadFloat3(&MousePos);//マウスの位置をベクトル化
@@ -107,7 +109,24 @@ void Stage::Update()
 					pFBXarray[type]->RayCast(data, trans);
 					if (data.hit == true)
 					{
-						table[x][z].height++;
+						switch (selectMode)
+						{
+						case 0:
+							table[x][z].height++;
+							break;
+						case 1:
+							if (table[x][z].height > 1)
+							{
+								table[x][z].height--;
+							}
+							break;
+						case 2:
+							table[x][z].type = selectType;
+							break;
+						default:
+							break;
+						}
+						
 						return;
 					}
 				}
@@ -115,6 +134,25 @@ void Stage::Update()
 		}
 	}
 }
+/*  
+        XMFLOAT3 mousePosBack = Input::GetMousePosition();
+        mousePosBack.z = 0.0f;
+        XMFLOAT3 mousePosFront = Input::GetMousePosition();
+        mousePosFront.z = 1.0f;
+
+        //①　mousePosFrontをベクトルに変換
+        XMVECTOR vMouseFront = XMLoadFloat3(&mousePosFront); // カメラから見える範囲で一番後ろの面を取得
+        //ここで変換する(前) 
+        // ①にinvVP、invPrj、invViewをかける
+        vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
+        //③　mousePosBackをベクトルに変換
+        XMVECTOR vMouseBack = XMLoadFloat3(&mousePosBack);
+        //④　③にinvVP、invPrj、invViewをかける
+        vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
+ 
+        RayCastDeta data;
+        XMStoreFloat3(&data.start, vMouseFront);
+        XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);*/
 
 void Stage::Draw()
 {
@@ -185,10 +223,16 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 		switch (LOWORD(wp))
 		{
 		case IDC_RADIO_UP:
+			selectMode = 0;
 			break;
 		case IDC_RADIO_DOWN:
+			selectMode = 1;
 			break;
 		case IDC_RADIO_CHANGE:
+			selectMode = 2;
+			break;
+		case IDC_COMBO3:
+			//selectType = (int)SendMessage(GetDlgItem(hDlg,lp), CB_GETCURSEL, 0, 0);
 			break;
 		case ID_MENU_NEW:
 			break;
@@ -199,10 +243,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 		default:
 			break;
 		}
-	case WM_MOUSEMOVE:
-		Input::SetMousePosition(LOWORD(lp), HIWORD(lp));
-		return 0;
-
 	}
 
 	return FALSE;
