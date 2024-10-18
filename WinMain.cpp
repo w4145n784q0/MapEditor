@@ -78,7 +78,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
     ShowWindow(hWnd, nCmdShow);
 
     //IDD_DIALOG‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚ÆŒ¾‚í‚ê‚½‚ç
-    HWND hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1),hWnd, (DLGPROC)DialogProc);
+    //HWND hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1),hWnd, (DLGPROC)DialogProc);
 
     //Direct3D‰Šú‰»
     HRESULT hr =  Direct3D::Initialize(winW, winH, hWnd);
@@ -105,7 +105,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
     pController->Initialize();
 
 
-    
+    //IDD_DIALOG‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚ÆŒ¾‚í‚ê‚½‚ç
+    HWND hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, (DLGPROC)DialogProc);
 
     if (FAILED(hr))
     {

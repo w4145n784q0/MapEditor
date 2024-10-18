@@ -30,9 +30,6 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	/*pFBX = new FBX;
-	pFBX->Load("Assets/BoxDefault.fbx");*/
-
 	/*pFBXarray[0] = new FBX;
 	pFBXarray[0]->Load("Assets/BoxDefault.fbx");
 	pFBXarray[1] = new FBX;
@@ -44,8 +41,8 @@ void Stage::Initialize()
 	pFBXarray[4] = new FBX;
 	pFBXarray[4]->Load("Assets/BoxGrass.fbx");*/
 
-	string fileName[] = { "BoxDefault","BoxBrick","BoxSand"
-		,"BoxWater","BoxGrass" };
+	string fileName[] = { "BoxDefault","BoxBrick","BoxGrass"
+		,"BoxSand","BoxWater" };
 	for (int i = 0; i < 5; i++)
 	{
 		string path = "Assets/" + fileName[i] + ".fbx";
@@ -134,25 +131,6 @@ void Stage::Update()
 		}
 	}
 }
-/*  
-        XMFLOAT3 mousePosBack = Input::GetMousePosition();
-        mousePosBack.z = 0.0f;
-        XMFLOAT3 mousePosFront = Input::GetMousePosition();
-        mousePosFront.z = 1.0f;
-
-        //①　mousePosFrontをベクトルに変換
-        XMVECTOR vMouseFront = XMLoadFloat3(&mousePosFront); // カメラから見える範囲で一番後ろの面を取得
-        //ここで変換する(前) 
-        // ①にinvVP、invPrj、invViewをかける
-        vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
-        //③　mousePosBackをベクトルに変換
-        XMVECTOR vMouseBack = XMLoadFloat3(&mousePosBack);
-        //④　③にinvVP、invPrj、invViewをかける
-        vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
- 
-        RayCastDeta data;
-        XMStoreFloat3(&data.start, vMouseFront);
-        XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);*/
 
 void Stage::Draw()
 {
@@ -209,7 +187,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 	switch (msg)
 	{
 	case WM_INITDIALOG:
-		//HWND  h = GetDlgItem(hDlg, IDC_RADIO_UP);
 		SendMessage(GetDlgItem(hDlg, IDC_RADIO_UP), BM_SETCHECK, BST_CHECKED, 0);
 		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"デフォルト");
 		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"レンガ");
@@ -233,6 +210,7 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 			break;
 		case IDC_COMBO3:
 			selectType = (int)SendMessage(GetDlgItem(hDlg,IDC_COMBO3), CB_GETCURSEL, 0, 0);
+			return TRUE;
 			break;
 		case ID_MENU_NEW:
 			break;

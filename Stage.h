@@ -14,7 +14,7 @@ class Stage
     };
     Data table[20][20];
     int selectMode;//地形を上げるか下げるか変えるか
-    int selectType;//地形のしゅるい
+    int selectType;//地形の種類
 public:
     //コンストラクタ
     Stage();
