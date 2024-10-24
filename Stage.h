@@ -15,6 +15,13 @@ class Stage
     Data table[20][20];
     int selectMode;//地形を上げるか下げるか変えるか
     int selectType;//地形の種類
+
+    //保存
+    void Save();
+
+    //開く
+    void Open();
+
 public:
     //コンストラクタ
     Stage();
@@ -34,7 +41,8 @@ public:
     //開放
     void Release();
 
-    //ダイアログプロシージャをwinmainから持ってきたもの
+    //ウィンドウ（ダイアログ）プロシージャをwinmainから持ってきたもの
+    LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 };
 
