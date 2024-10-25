@@ -3,6 +3,12 @@
 #include"Camera.h"
 #include"Direct3D.h"
 #include"resource.h"
+#include<fstream>
+#include<vector>
+
+using std::ifstream;
+using std::ofstream;
+using std::vector;
 
 namespace {
 	int blockwidth = 20;
@@ -49,6 +55,25 @@ void Stage::Initialize()
 		pFBXarray[i] = new FBX;
 		pFBXarray[i]->Load(path);
 	}
+
+	//ファイルを読み込む処理↓（途中）------------------------------
+	int i = 0;
+	vector<string> inputList;
+	ifstream file("test.txt");
+	string indata;
+	if (file.fail()) {
+		//PostQuitMessage(0);
+	}
+	
+	while (std::getline(file, indata)) //一行ずつ読み込む
+	{
+		inputList.push_back(indata);
+		getchar();
+	}
+	//file.close();
+	
+
+
 }
 
 void Stage::Update()
@@ -230,6 +255,28 @@ void Stage::Save()
 
 void Stage::Open()
 {
+	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
+
+	//「ファイルを保存」ダイアログの設定
+	OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
+	ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
+	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
+	ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
+					  TEXT("テキストデータ(*.txt)\0*.txt\0")
+					  TEXT("すべてのファイル(*.*)\0*.*\0\0");     //─┘
+	ofn.lpstrFile = fileName;               	//ファイル名
+	ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
+	ofn.Flags = OFN_FILEMUSTEXIST;	//フラグ（同名ファイルが存在したら上書き確認）
+	ofn.lpstrDefExt = L"map";                  	//デフォルト拡張子
+
+	//「ファイルを開く」ダイアログ
+	BOOL selFile;
+	selFile = GetOpenFileName(&ofn);
+
+	//キャンセルしたら中断
+	if (selFile == FALSE) return;
+
+
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
 		L"test.txt",                 //ファイル名

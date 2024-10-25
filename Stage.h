@@ -1,11 +1,16 @@
 #pragma once
 #include"FBX.h"
 #include<string>
+
+
+using std::ifstream;
+namespace {
+    const int tablesize = 20;
+}
+
 class Stage
 {
-    //FBX* pFBX;
     FBX* pFBXarray[5];
-    //int table[20][20];
     
     struct Data
     {
