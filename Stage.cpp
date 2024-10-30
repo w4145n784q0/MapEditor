@@ -9,6 +9,7 @@
 using std::ifstream;
 using std::ofstream;
 using std::vector;
+using std::to_string;
 
 namespace {
 	int blockwidth = 20;
@@ -23,11 +24,35 @@ Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
 		{
 			table[i][j].height = 1;
 			table[i][j].type = 0;
+			/*TableMapData.push_back(to_string(table[i][j].height));
+			TableMapData.push_back(".");
+			TableMapData.push_back(to_string(table[i][j].type));
+			TableMapData.push_back(",");*/
+
+			TableData.push_back((char)table[i][j].height);
+			TableData.push_back('.');
+			TableData.push_back((char)table[i][j].type);
+			TableData.push_back(',');
+
 		}
 	}
-	table[0][0].height = 5;
-	table[0][9].height = 3;
-	table[5][2].type = 3;
+
+	//table[0][0].height = 5;
+	//table[0][9].height = 3;
+	//table[5][2].type = 3;
+
+	ofstream file("outputTEST.txt");
+	if (file.is_open()) {
+		// 文章をファイルに出力
+		for (const char& value : TableData) {
+			file << value; 
+		}
+		file.close(); // ファイルを閉じる
+	}
+	else {
+		//PostQuitMessage(0);
+	}
+
 }
 
 Stage::~Stage()
@@ -57,20 +82,20 @@ void Stage::Initialize()
 	}
 
 	//ファイルを読み込む処理↓（途中）------------------------------
-	int i = 0;
-	vector<string> inputList;
-	ifstream file("test.txt");
-	string indata;
-	if (file.fail()) {
-		//PostQuitMessage(0);
-	}
+	//int i = 0;
+	//vector<string> inputList;
+	//ifstream file("test.txt");
+	//string indata;
+	//if (file.fail()) {
+	//	//PostQuitMessage(0);
+	//}
+	//
+	//while (std::getline(file, indata)) //一行ずつ読み込む
+	//{
+	//	inputList.push_back(indata);
+	//}
+	////file.close();
 	
-	while (std::getline(file, indata)) //一行ずつ読み込む
-	{
-		inputList.push_back(indata);
-		getchar();
-	}
-	//file.close();
 	
 
 
@@ -230,11 +255,11 @@ void Stage::Save()
 	//キャンセルしたら中断
 	if (selFile == FALSE) return;
 
-
+	string a = "aaaa";
 
 	HANDLE hFile;        //ファイルのハンドル 
 	hFile = CreateFile(
-		L"test.txt",                 //ファイル名(自由)
+		L"savedata.txt",                 //ファイル名(自由)
 		GENERIC_WRITE,           //アクセスモード（書き込み用->GENERIC_WRITE）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
@@ -246,7 +271,7 @@ void Stage::Save()
 	WriteFile(
 		hFile,                   //ファイルハンドル
 		"abcd",                  //保存するデータ（文字列）だいたい変数
-		(DWORD)(4),   //書き込む文字数 本来はstrlenで変数に指定
+		/*(DWORD)strlen(TableMapData)*/ (DWORD)(4),   //書き込む文字数 本来はstrlenで変数に指定
 		&dwBytes,                //書き込んだサイズを入れる変数
 		NULL);
 
@@ -279,7 +304,7 @@ void Stage::Open()
 
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
-		L"test.txt",                 //ファイル名
+		fileName,                 //ファイル名
 		GENERIC_READ,           //アクセスモード（読み込み用->GENERIC_READ）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
@@ -304,6 +329,23 @@ void Stage::Open()
 		NULL);     //オーバーラップド構造体（今回は使わない）
 
 	CloseHandle(hFile);
+}
+
+void Stage::OpenFileStage()
+{
+	//ファイルを読み込む処理↓（途中）------------------------------
+	int i = 0;
+	vector<string> inputList;
+	ifstream file("test.txt");
+	string indata;
+	if (file.fail()) {
+		//PostQuitMessage(0);
+	}
+
+	while (std::getline(file, indata)) //一行ずつ読み込む
+	{
+		inputList.push_back(indata);
+	}
 }
 
 ////ウィンドウプロシージャ(ただの関数にした)

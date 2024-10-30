@@ -1,12 +1,14 @@
 #pragma once
 #include"FBX.h"
 #include<string>
+#include<vector>
 
-
-using std::ifstream;
 namespace {
     const int tablesize = 20;
 }
+
+using std::ifstream;
+using std::vector;
 
 class Stage
 {
@@ -20,12 +22,17 @@ class Stage
     Data table[20][20];
     int selectMode;//地形を上げるか下げるか変えるか
     int selectType;//地形の種類
+    vector<string> TableMapData;//tableの中身を保存
+    vector<char> TableData;
 
     //保存
     void Save();
 
     //開く
     void Open();
+
+    //開いたデータを読み込む
+    void OpenFileStage();
 
 public:
     //コンストラクタ
