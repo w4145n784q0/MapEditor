@@ -5,6 +5,8 @@
 #include"resource.h"
 #include<fstream>
 #include<vector>
+#include <stdio.h>
+#include<string>
 
 using std::ifstream;
 using std::ofstream;
@@ -24,16 +26,6 @@ Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
 		{
 			table[i][j].height = 1;
 			table[i][j].type = 0;
-			/*TableMapData.push_back(to_string(table[i][j].height));
-			TableMapData.push_back(".");
-			TableMapData.push_back(to_string(table[i][j].type));
-			TableMapData.push_back(",");*/
-
-			TableData.push_back((char)table[i][j].height);
-			TableData.push_back('.');
-			TableData.push_back((char)table[i][j].type);
-			TableData.push_back(',');
-
 		}
 	}
 
@@ -41,17 +33,17 @@ Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
 	//table[0][9].height = 3;
 	//table[5][2].type = 3;
 
-	ofstream file("outputTEST.txt");
-	if (file.is_open()) {
-		// 文章をファイルに出力
-		for (const char& value : TableData) {
-			file << value; 
-		}
-		file.close(); // ファイルを閉じる
-	}
-	else {
-		//PostQuitMessage(0);
-	}
+	//ofstream file("outputTEST.txt");
+	//if (file.is_open()) {
+	//	// 文章をファイルに出力
+	//	for (const string& value : TableMapData) {
+	//		file << value; 
+	//	}
+	//	file.close(); // ファイルを閉じる
+	//}
+	//else {
+	//	//PostQuitMessage(0);
+	//}
 
 }
 
@@ -233,6 +225,28 @@ void Stage::Release()
 
 void Stage::Save()
 {
+	//char[256]で保存してspritf使う方法もある
+
+	
+
+
+	//コンマ区切りで保存
+	string save = "";
+	for (int i = 0; i < blockheight; i++)
+	{
+		for (int j = 0; j < blockwidth; j++)
+		{
+			save += table[i][j].height;
+			save += ",";
+			save += table[i][j].type;//typeは別に保存?
+			save += ",";
+		}
+	}
+
+	DWORD savedataread = (DWORD)save.c_str();
+	const char* savedata = save.c_str();
+
+
 	//名前を付けて保存する
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数(ワイド文字列)
 
@@ -255,8 +269,6 @@ void Stage::Save()
 	//キャンセルしたら中断
 	if (selFile == FALSE) return;
 
-	string a = "aaaa";
-
 	HANDLE hFile;        //ファイルのハンドル 
 	hFile = CreateFile(
 		L"savedata.txt",                 //ファイル名(自由)
@@ -270,8 +282,8 @@ void Stage::Save()
 	DWORD dwBytes = 0;  //書き込み位置
 	WriteFile(
 		hFile,                   //ファイルハンドル
-		"abcd",                  //保存するデータ（文字列）だいたい変数
-		/*(DWORD)strlen(TableMapData)*/ (DWORD)(4),   //書き込む文字数 本来はstrlenで変数に指定
+		savedata,                  //保存するデータ（文字列）だいたい変数
+		(DWORD)strlen(savedata) /*(DWORD)strlen(4)*/,   //書き込む文字数 本来はstrlenで変数に指定
 		&dwBytes,                //書き込んだサイズを入れる変数
 		NULL);
 

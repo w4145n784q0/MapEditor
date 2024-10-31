@@ -23,6 +23,7 @@ class Stage
     int selectMode;//地形を上げるか下げるか変えるか
     int selectType;//地形の種類
     vector<string> TableMapData;//tableの中身を保存
+    
     vector<char> TableData;
 
     //保存
