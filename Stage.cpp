@@ -33,17 +33,28 @@ Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
 	//table[0][9].height = 3;
 	//table[5][2].type = 3;
 
-	//ofstream file("outputTEST.txt");
-	//if (file.is_open()) {
-	//	// 文章をファイルに出力
-	//	for (const string& value : TableMapData) {
-	//		file << value; 
-	//	}
-	//	file.close(); // ファイルを閉じる
-	//}
-	//else {
-	//	//PostQuitMessage(0);
-	//}
+	//ファイルを読み込む処理↓（途中）------------------------------
+	/*int i = 0;
+	vector<string> inputList;
+	ifstream file("test.txt");
+	string indata;
+	if (file.fail()) {
+		//PostQuitMessage(0);
+	}
+	
+
+	ifstream file("savedata.txt");
+	if (file.is_open()) {
+		// 文章をファイルに出力
+		while (std::getline(file, indata)) //一行ずつ読み込む
+		{
+			inputList.push_back(indata);
+		}
+		file.close(); // ファイルを閉じる
+	}
+	else {
+		//PostQuitMessage(0);
+	}*/
 
 }
 
@@ -227,24 +238,21 @@ void Stage::Save()
 {
 	//char[256]で保存してspritf使う方法もある
 
-	
-
-
 	//コンマ区切りで保存
-	string save = "";
+	string save = " ";
 	for (int i = 0; i < blockheight; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
 		{
-			save += table[i][j].height;
+			save += to_string( table[i][j].height);
 			save += ",";
-			save += table[i][j].type;//typeは別に保存?
+			save += to_string(table[i][j].type);//typeは別に保存?
 			save += ",";
 		}
 	}
 
-	DWORD savedataread = (DWORD)save.c_str();
-	const char* savedata = save.c_str();
+	//DWORD savedatar = (DWORD)save.c_str();
+	//const char* savedata = save.c_str();
 
 
 	//名前を付けて保存する
@@ -282,8 +290,10 @@ void Stage::Save()
 	DWORD dwBytes = 0;  //書き込み位置
 	WriteFile(
 		hFile,                   //ファイルハンドル
-		savedata,                  //保存するデータ（文字列）だいたい変数
-		(DWORD)strlen(savedata) /*(DWORD)strlen(4)*/,   //書き込む文字数 本来はstrlenで変数に指定
+		//savedata,                  //保存するデータ（文字列）だいたい変数
+		//(DWORD)strlen(savedata) /*(DWORD)strlen(4)*/,   //書き込む文字数 本来はstrlenで変数に指定
+		save.c_str(),
+		save.size(),
 		&dwBytes,                //書き込んだサイズを入れる変数
 		NULL);
 
@@ -294,7 +304,7 @@ void Stage::Open()
 {
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
 
-	//「ファイルを保存」ダイアログの設定
+	//「ファイルを開く」ダイアログの設定
 	OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
 	ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
 	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
@@ -340,24 +350,44 @@ void Stage::Open()
 		&dwBytes,  //読み込んだサイズ
 		NULL);     //オーバーラップド構造体（今回は使わない）
 
+
+
+	string load = data;
+	for (int i = 0; i < blockheight; i++)
+	{
+		for (int j = 0; j < blockwidth; j++)
+		{
+			table[i][j].height = data[i];
+			table[i][j].type = 0;
+		}
+	}
+
+	//ファイルを読み込む処理↓（途中）------------------------------
+	//int i = 0;
+	//vector<string> inputList;
+	//ifstream file("savedata.txt");	
+	//string indata;
+	//if (file.fail()) {
+	//	//PostQuitMessage(0);
+	//	i++;
+	//}
+	//else
+	//{
+	//	while (std::getline(file, indata)) //一行ずつ読み込む
+	//	{
+	//		inputList.push_back(indata);
+	//	}
+	//}
+
 	CloseHandle(hFile);
+
+
+
 }
 
 void Stage::OpenFileStage()
 {
-	//ファイルを読み込む処理↓（途中）------------------------------
-	int i = 0;
-	vector<string> inputList;
-	ifstream file("test.txt");
-	string indata;
-	if (file.fail()) {
-		//PostQuitMessage(0);
-	}
-
-	while (std::getline(file, indata)) //一行ずつ読み込む
-	{
-		inputList.push_back(indata);
-	}
+	
 }
 
 ////ウィンドウプロシージャ(ただの関数にした)
