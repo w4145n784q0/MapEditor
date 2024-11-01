@@ -4,18 +4,21 @@
 #include"Direct3D.h"
 #include"resource.h"
 #include<fstream>
-#include<vector>
-#include <stdio.h>
+#include<vector>/*
+#include <stdio.h>*/
 #include<string>
+#include<sstream>
+#include<algorithm>
 
 using std::ifstream;
 using std::ofstream;
 using std::vector;
 using std::to_string;
+using std::stoi;
 
 namespace {
-	int blockwidth = 20;
-	int blockheight = 20;
+	const int blockwidth = 20;
+	const int blockheight = 20;
 }
 
 Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
@@ -239,20 +242,17 @@ void Stage::Save()
 	//char[256]で保存してspritf使う方法もある
 
 	//コンマ区切りで保存
-	string save = " ";
+	string save = "";
 	for (int i = 0; i < blockheight; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
 		{
 			save += to_string( table[i][j].height);
 			save += ",";
-			save += to_string(table[i][j].type);//typeは別に保存?
+			save += to_string(table[i][j].type);
 			save += ",";
 		}
 	}
-
-	//DWORD savedatar = (DWORD)save.c_str();
-	//const char* savedata = save.c_str();
 
 
 	//名前を付けて保存する
@@ -353,32 +353,42 @@ void Stage::Open()
 
 
 	string load = data;
+	
+	vector<string> heightlist;
+	vector<string> typelist;
+
+	std::stringstream ss{ load };
+	string tmp;
+	int count = 0;
+
+	while (std::getline(ss, tmp, ','))
+	{
+		if (count % 2 == 0)
+		{
+			heightlist.push_back(tmp);
+		}
+		else {
+			typelist.push_back(tmp);
+		}
+		count++;
+	}
+
+	int gag = load.size();
+
+	int filePos = 0;
+	int z = 0;
 	for (int i = 0; i < blockheight; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
 		{
-			table[i][j].height = data[i];
-			table[i][j].type = 0;
+			table[i][j].height = stoi(heightlist[filePos]);
+			table[i][j].type = stoi(typelist[filePos]);
+			filePos++;
+			
 		}
+		z++;
 	}
-
-	//ファイルを読み込む処理↓（途中）------------------------------
-	//int i = 0;
-	//vector<string> inputList;
-	//ifstream file("savedata.txt");	
-	//string indata;
-	//if (file.fail()) {
-	//	//PostQuitMessage(0);
-	//	i++;
-	//}
-	//else
-	//{
-	//	while (std::getline(file, indata)) //一行ずつ読み込む
-	//	{
-	//		inputList.push_back(indata);
-	//	}
-	//}
-
+	
 	CloseHandle(hFile);
 
 
