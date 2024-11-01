@@ -4,11 +4,9 @@
 #include"Direct3D.h"
 #include"resource.h"
 #include<fstream>
-#include<vector>/*
-#include <stdio.h>*/
+#include<vector>
 #include<string>
 #include<sstream>
-#include<algorithm>
 
 using std::ifstream;
 using std::ofstream;
@@ -31,34 +29,6 @@ Stage::Stage() :pFBXarray(),selectMode(0),selectType(0)
 			table[i][j].type = 0;
 		}
 	}
-
-	//table[0][0].height = 5;
-	//table[0][9].height = 3;
-	//table[5][2].type = 3;
-
-	//ファイルを読み込む処理↓（途中）------------------------------
-	/*int i = 0;
-	vector<string> inputList;
-	ifstream file("test.txt");
-	string indata;
-	if (file.fail()) {
-		//PostQuitMessage(0);
-	}
-	
-
-	ifstream file("savedata.txt");
-	if (file.is_open()) {
-		// 文章をファイルに出力
-		while (std::getline(file, indata)) //一行ずつ読み込む
-		{
-			inputList.push_back(indata);
-		}
-		file.close(); // ファイルを閉じる
-	}
-	else {
-		//PostQuitMessage(0);
-	}*/
-
 }
 
 Stage::~Stage()
@@ -67,17 +37,6 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	/*pFBXarray[0] = new FBX;
-	pFBXarray[0]->Load("Assets/BoxDefault.fbx");
-	pFBXarray[1] = new FBX;
-	pFBXarray[1]->Load("Assets/BoxBrick.fbx");
-	pFBXarray[2] = new FBX;
-	pFBXarray[2]->Load("Assets/BoxSand.fbx");
-	pFBXarray[3] = new FBX;
-	pFBXarray[3]->Load("Assets/BoxWater.fbx");
-	pFBXarray[4] = new FBX;
-	pFBXarray[4]->Load("Assets/BoxGrass.fbx");*/
-
 	string fileName[] = { "BoxDefault","BoxBrick","BoxGrass"
 		,"BoxSand","BoxWater" };
 	for (int i = 0; i < 5; i++)
@@ -86,24 +45,6 @@ void Stage::Initialize()
 		pFBXarray[i] = new FBX;
 		pFBXarray[i]->Load(path);
 	}
-
-	//ファイルを読み込む処理↓（途中）------------------------------
-	//int i = 0;
-	//vector<string> inputList;
-	//ifstream file("test.txt");
-	//string indata;
-	//if (file.fail()) {
-	//	//PostQuitMessage(0);
-	//}
-	//
-	//while (std::getline(file, indata)) //一行ずつ読み込む
-	//{
-	//	inputList.push_back(indata);
-	//}
-	////file.close();
-	
-	
-
 
 }
 
@@ -190,22 +131,6 @@ void Stage::Update()
 
 void Stage::Draw()
 {
-	
-	/*for (int i = 0; i < blockwidth; i++)
-	{
-		for (int j = 0; j < blockwidth; j++)
-		{
-			for (int k = 0; k < 3; k++)
-			{
-				transform.position_.y = k;
-				transform.position_.x = j;
-				transform.position_.z = i;
-				pFBX->Draw(transform);
-			}
-			
-		}
-	}*/
-
 	for (int x = 0; x < blockwidth; x++)
 	{
 		for (int z = 0; z < blockwidth; z++)
@@ -224,7 +149,6 @@ void Stage::Draw()
 
 		}
 	}
-
 }
 
 void Stage::Release()
@@ -239,21 +163,18 @@ void Stage::Release()
 
 void Stage::Save()
 {
-	//char[256]で保存してspritf使う方法もある
-
 	//コンマ区切りで保存
 	string save = "";
 	for (int i = 0; i < blockheight; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
 		{
-			save += to_string( table[i][j].height);
+			save += to_string(table[i][j].height);
 			save += ",";
 			save += to_string(table[i][j].type);
 			save += ",";
 		}
 	}
-
 
 	//名前を付けて保存する
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数(ワイド文字列)
@@ -290,10 +211,8 @@ void Stage::Save()
 	DWORD dwBytes = 0;  //書き込み位置
 	WriteFile(
 		hFile,                   //ファイルハンドル
-		//savedata,                  //保存するデータ（文字列）だいたい変数
-		//(DWORD)strlen(savedata) /*(DWORD)strlen(4)*/,   //書き込む文字数 本来はstrlenで変数に指定
-		save.c_str(),
-		save.size(),
+		save.c_str(),//savedata,//保存するデータ（文字列）だいたい変数
+		save.size(),//(DWORD)strlen(savedata) /*(DWORD)strlen(4)*/, //書き込む文字数 本来はstrlenで変数に指定
 		&dwBytes,                //書き込んだサイズを入れる変数
 		NULL);
 
@@ -351,17 +270,16 @@ void Stage::Open()
 		NULL);     //オーバーラップド構造体（今回は使わない）
 
 
-
 	string load = data;
 	
-	vector<string> heightlist;
-	vector<string> typelist;
+	vector<string> heightlist;//高さのデータ入れる
+	vector<string> typelist;//種類のデータ入れる
 
 	std::stringstream ss{ load };
 	string tmp;
 	int count = 0;
 
-	while (std::getline(ss, tmp, ','))
+	while (std::getline(ss, tmp, ','))//loadが入ったsstreamを,ごとに区切り、tmpに保存
 	{
 		if (count % 2 == 0)
 		{
@@ -373,10 +291,7 @@ void Stage::Open()
 		count++;
 	}
 
-	int gag = load.size();
-
 	int filePos = 0;
-	int z = 0;
 	for (int i = 0; i < blockheight; i++)
 	{
 		for (int j = 0; j < blockwidth; j++)
@@ -384,20 +299,10 @@ void Stage::Open()
 			table[i][j].height = stoi(heightlist[filePos]);
 			table[i][j].type = stoi(typelist[filePos]);
 			filePos++;
-			
 		}
-		z++;
 	}
 	
 	CloseHandle(hFile);
-
-
-
-}
-
-void Stage::OpenFileStage()
-{
-	
 }
 
 ////ウィンドウプロシージャ(ただの関数にした)

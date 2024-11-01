@@ -32,9 +32,6 @@ class Stage
     //開く
     void Open();
 
-    //開いたデータを読み込む
-    void OpenFileStage();
-
 public:
     //コンストラクタ
     Stage();
