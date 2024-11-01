@@ -158,7 +158,6 @@ void Stage::Release()
 		pFBXarray[i]->Release();
 		SAFE_DELETE(pFBXarray[i]);
 	}
-
 }
 
 void Stage::Save()
@@ -200,7 +199,7 @@ void Stage::Save()
 
 	HANDLE hFile;        //ファイルのハンドル 
 	hFile = CreateFile(
-		L"savedata.txt",                 //ファイル名(自由)
+		/*L"savedata.txt"*/fileName,                 //ファイル名(自由)
 		GENERIC_WRITE,           //アクセスモード（書き込み用->GENERIC_WRITE）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
